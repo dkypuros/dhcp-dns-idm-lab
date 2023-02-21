@@ -1,17 +1,10 @@
 
-My documentation home page
+DHCP, DNS and IdM Setup Lab
 ============================
 
-Example Sub heading
+Welcome
 ---------------------------------------------
-Arius **gravida** eget, venenatis non massa. Donec quis mi. Integer ut elementum metus. https://www.google.com
-
-* item 1
-* item 2
-
-.. figure:: images/ritz.jpg
-      :alt: Ritz for life image
-      :scale: 20 %
+This site is a lab for creating an environment needed for multipe other labs. 
 
 .. toctree:: 
    :maxdepth: 2
