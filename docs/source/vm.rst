@@ -6,7 +6,7 @@ VirtualBox on RHEL 9
 I'll need to come back to these steps. I didn't document this installation, and I believe I ran into a few GOTCHA's.
 
 Port forwarding
-++++++++++++++++++
+-------------------
 
 Once installed, setup "port forwarding". Click on the hamburger menu next to "tools". Select Network > NAT network. Double-click the "NATNetwork". The default network should be **10.0.2.0/24** for VirtualBox. Choose "Port forwarding" next to general options > ipv4. Click on the icon to "add" a port forwarding "rule". See example below on how to add a rule:
 
