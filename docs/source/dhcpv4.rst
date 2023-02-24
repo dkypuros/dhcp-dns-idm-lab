@@ -74,7 +74,7 @@ Third
 
 
 Review and Test DHCP Service Config Files
-----------------------------------------
+--------------------------------------------
 
 Let's query information about an installed package.
 
