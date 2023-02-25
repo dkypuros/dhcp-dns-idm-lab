@@ -1,0 +1,4 @@
+2023-02-25 12:50:50.170 WARN  [kea-dhcp4.dhcp4/33262.140657860513792] DHCP4_CONFIG_SYNTAX_WARNING configuration syntax warning: /etc/kea/kea-dhcp4.conf:436.39: Extraneous comma. A piece of configuration may have been omitted.
+2023-02-25 12:50:50.170 INFO  [kea-dhcp4.hosts/33262.140657860513792] HOSTS_BACKENDS_REGISTERED the following host backend types are available: mysql postgresql 
+2023-02-25 12:50:50.171 INFO  [kea-dhcp4.dhcpsrv/33262.140657860513792] DHCPSRV_CFGMGR_SOCKET_TYPE_DEFAULT "dhcp-socket-type" not specified , using default socket type raw
+2023-02-25 12:50:50.171 INFO  [kea-dhcp4.dhcpsrv/33262.140657860513792] DHCPSRV_CFGMGR_NEW_SUBNET4 a new subnet has been added to configuration: 192.0.2.0/24 with params: t1=900, t2=1800, valid-lifetime=3600
