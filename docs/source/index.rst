@@ -14,4 +14,5 @@ This site is a lab for creating an environment needed for multipe other labs.
    architecture
    vm
    dhcpv4
-   dhcpappendix
+   dns
+   generalappendix

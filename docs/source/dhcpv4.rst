@@ -1,4 +1,4 @@
-DHCP v4 Kea (JSON-based)
+DHCP Kea - Quick Setup
 ================================
 System Prep: Let's get the system ready to provide DHCP v4 services.
 
