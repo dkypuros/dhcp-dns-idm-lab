@@ -1,0 +1,33 @@
+-- Logs begin at Sat 2023-02-25 11:58:08 CST, end at Sat 2023-02-25 13:26:55 CST. --
+Feb 25 12:33:20 dhcp1 systemd[1]: Started Kea DHCPv4 Server.
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: 2023-02-25 12:33:20.199 INFO  [kea-dhcp4.dhcp4/32992.140466322038784] DHCP4_STARTING Kea DHCPv4 server version 2.2.0 (stable) starting
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: 2023-02-25 12:33:20.200 WARN  [kea-dhcp4.dhcp4/32992.140466322038784] DHCP4_CONFIG_SYNTAX_WARNING configuration syntax warning: /etc/kea/kea-dhcp4.conf:436.39: Extraneous comma. A piece of configur>
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  HOSTS_BACKENDS_REGISTERED the following host backend types are available: mysql postgresql
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCPSRV_CFGMGR_SOCKET_TYPE_DEFAULT "dhcp-socket-type" not specified , using default socket type raw
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCPSRV_CFGMGR_NEW_SUBNET4 a new subnet has been added to configuration: 192.0.2.0/24 with params: t1=900, t2=1800, valid-lifetime=3600
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  COMMAND_ACCEPTOR_START Starting to accept connections via unix domain socket bound to /tmp/kea4-ctrl-socket
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCP4_CONFIG_COMPLETE DHCPv4 server has completed configuration: added IPv4 subnets: 1; DDNS: disabled
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCPSRV_MEMFILE_DB opening memory file lease database: lfc-interval=3600 type=memfile universe=4
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCPSRV_MEMFILE_LEASE_FILE_LOAD loading leases from file /var/lib/kea/kea-leases4.csv
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCPSRV_MEMFILE_LFC_SETUP setting up the Lease File Cleanup interval to 3600 sec
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: WARN  DHCPSRV_NO_SOCKETS_OPEN no interface configured to listen to DHCP traffic
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: WARN  DHCP4_MULTI_THREADING_INFO enabled: no, number of threads: 0, queue size: 0
+Feb 25 12:33:20 dhcp1 kea-dhcp4[32992]: INFO  DHCP4_STARTED Kea DHCPv4 server version 2.2.0 started
+Feb 25 12:34:10 dhcp1 systemd[1]: Stopping Kea DHCPv4 Server...
+Feb 25 12:34:10 dhcp1 kea-dhcp4[32992]: INFO  DHCP4_SHUTDOWN server shutdown
+Feb 25 12:34:10 dhcp1 systemd[1]: kea-dhcp4.service: Succeeded.
+Feb 25 12:34:10 dhcp1 systemd[1]: Stopped Kea DHCPv4 Server.
+Feb 25 13:26:55 dhcp1 systemd[1]: Started Kea DHCPv4 Server.
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: 2023-02-25 13:26:55.586 INFO  [kea-dhcp4.dhcp4/33802.140088883216384] DHCP4_STARTING Kea DHCPv4 server version 2.2.0 (stable) starting
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: 2023-02-25 13:26:55.587 WARN  [kea-dhcp4.dhcp4/33802.140088883216384] DHCP4_CONFIG_SYNTAX_WARNING configuration syntax warning: /etc/kea/kea-dhcp4.conf:436.39: Extraneous comma. A piece of configur>
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  HOSTS_BACKENDS_REGISTERED the following host backend types are available: mysql postgresql
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCPSRV_CFGMGR_SOCKET_TYPE_DEFAULT "dhcp-socket-type" not specified , using default socket type raw
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCPSRV_CFGMGR_NEW_SUBNET4 a new subnet has been added to configuration: 192.0.2.0/24 with params: t1=900, t2=1800, valid-lifetime=3600
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  COMMAND_ACCEPTOR_START Starting to accept connections via unix domain socket bound to /tmp/kea4-ctrl-socket
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCP4_CONFIG_COMPLETE DHCPv4 server has completed configuration: added IPv4 subnets: 1; DDNS: disabled
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCPSRV_MEMFILE_DB opening memory file lease database: lfc-interval=3600 type=memfile universe=4
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCPSRV_MEMFILE_LEASE_FILE_LOAD loading leases from file /var/lib/kea/kea-leases4.csv
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCPSRV_MEMFILE_LFC_SETUP setting up the Lease File Cleanup interval to 3600 sec
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: WARN  DHCPSRV_NO_SOCKETS_OPEN no interface configured to listen to DHCP traffic
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: WARN  DHCP4_MULTI_THREADING_INFO enabled: no, number of threads: 0, queue size: 0
+Feb 25 13:26:55 dhcp1 kea-dhcp4[33802]: INFO  DHCP4_STARTED Kea DHCPv4 server version 2.2.0 started

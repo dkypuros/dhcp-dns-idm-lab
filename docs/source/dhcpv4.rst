@@ -98,8 +98,45 @@ Let's :ref:`stop <figure3>` the service and peek at the file with vim.
 
     vim /etc/kea/kea-dhcp4.conf
 
+You can also view the raw config file here on GitHub_
+
+.. _GitHub: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-config.txt
+
+DHCP Config Test
+-----------------------
+
 .. tip:: 
 
    You can also test the configuration and review the output :ref:`info <figure1>` and check out the ports :ref:`ports <figure2>`
 
-Just as a pre-caution let's :ref:`test <figure2>` the configuration file.
+
+- Just as a pre-caution let's test the configuration file ( :ref:`Instructions here <figure2>` ). 
+
+- Let's take a peak out my sample output here: DHCP_Test_Config_.
+    
+.. _DHCP_Test_Config: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-test-config.txt
+
+- One last thing. We can compare both the DHCP Config to the INFO presented from the configuration test.
+
+Quick Compare
+----------------
+
+- Config Test INFO on dhcp-test-config.txt_ 
+    
+.. _dhcp-test-config.txt: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-test-config.txt
+
+- kea-dhcp4.conf on dhcp-config.txt_
+
+.. _dhcp-config.txt: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-config.txt
+
+- Quick Compare "192.0.2.0/24" (Use CTRL-F on both documents)
+
+Start Service & View Journal
+---------------------------------
+
+- Start the :ref:`service<figure3>`
+- View the :ref:`journal<figure5>`
+
+Checkout my output DHCP-Journal_
+
+.. _DHCP-Journal: 

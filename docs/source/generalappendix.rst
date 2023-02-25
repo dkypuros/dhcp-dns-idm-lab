@@ -26,21 +26,6 @@ Test in Browswer
     localhost:9090
 
 
-
-DNS BIND 9
------------------
-
-.. _dnsfigure1:
-
-Figure 1: 
-
-DNS example
-
-.. code-blaock:: bash
-
-    hello world test
-
-
 DHCP Kea [Appendix]
 ---------------------------------------------
 
@@ -146,3 +131,18 @@ Release the DHCP address on the VM.
 .. code-block:: bash
 
     dhclient -r
+
+
+DNS BIND 9
+-----------------
+
+.. _dnsfigure1:
+
+Figure 1: 
+
+DNS example
+
+.. code-blaock:: bash
+
+    hello world test
+
