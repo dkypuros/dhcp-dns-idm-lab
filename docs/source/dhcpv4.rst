@@ -75,7 +75,7 @@ Third
     systemctl status kea-dhcp4
 
 
-Review and Test DHCP Service Config Files
+Perform: DHCP Config File Test
 --------------------------------------------
 
 Let's query information about an installed package.
@@ -102,8 +102,8 @@ You can also view the raw config file here on GitHub_
 
 .. _GitHub: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-config.txt
 
-DHCP Config Test
------------------------
+Review: DHCP Config Test Results
+-----------------------------------------
 
 .. tip:: 
 
@@ -118,8 +118,8 @@ DHCP Config Test
 
 - One last thing. We can compare both the DHCP Config to the INFO presented from the configuration test.
 
-Quick Compare
-----------------
+Review: Compare Config to Test
+----------------------------------
 
 - Config Test INFO on dhcp-test-config.txt_ 
     
@@ -131,12 +131,12 @@ Quick Compare
 
 - Quick Compare "192.0.2.0/24" (Use CTRL-F on both documents)
 
-Start Service & View Journal
----------------------------------
+Review: Start DHCP & View Journal
+----------------------------------
 
 - Start the :ref:`service<figure3>`
 - View the :ref:`journal<figure5>`
 
 Checkout my output DHCP-Journal_
 
-.. _DHCP-Journal: 
+.. _DHCP-Journal: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-service.txt
