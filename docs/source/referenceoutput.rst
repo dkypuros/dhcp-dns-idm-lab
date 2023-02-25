@@ -5,9 +5,13 @@ File contents and output for reference purposes
 dhcp config.
 ------------------
 
-cat /etc/kea/kea-dhcp4.conf
+.. code-block:: bash
 
-... code-block:: bash
+    cat /etc/kea/kea-dhcp4.conf
+
+preview on GitHub using "Raw"
+
+.. raw:: bash
 
 // This is a basic configuration for the Kea DHCPv4 server. Subnet declarations
 // are mostly commented out and no interfaces are listed. Therefore, the servers
