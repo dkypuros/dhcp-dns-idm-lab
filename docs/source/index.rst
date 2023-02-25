@@ -16,3 +16,4 @@ This site is a lab for creating an environment needed for multipe other labs.
    dhcpv4
    dns
    generalappendix
+   referenceoutput

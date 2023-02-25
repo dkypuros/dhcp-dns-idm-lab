@@ -10,11 +10,12 @@ Make sure system can get out to the internet. Your hypervisor of choice (e.g. Vi
 .. warning::
     Make sure you don't toggle the underlying systems's NIC to a different NIC/network. It will cause problems with VMs NAT/internet access.
 
-Replace 'eth01' with your connection name.
+Replace 'eth01' with your connection name. When this value is set to auto for :code:`ipv4.method: auto` that means DHCP.
 
 .. code-block:: bash
 
     nmcli con show
+    nmcli con show enp0s3
     nmcli con mod eth01 ipv4.method auto
 
 Install EPEL on Centos 8
@@ -58,6 +59,7 @@ First
 
 .. code-block:: bash
 
+    su -
     systemctl enable kea-dhcp4
 
 Second

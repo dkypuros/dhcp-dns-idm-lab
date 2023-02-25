@@ -152,7 +152,13 @@ Repeat the steps and make sure there is a rule for all of the systems:
 
 Change the "host port" by an increment of 1, so you can ssh to all of the systems at the same time. The Guest port can remain the same, because the "guest port" is the port on the virtual machine that will receive the forwarded traffic from the "host port." It doesn't need to remain unique.
 
+**Final Rules for my setup**
+As long as they are all different, it's good.
 
+- dhcp1: host port=2222
+- ns1: host port=2223
+- id1: host port=2224
+- centos-client host port=2225
 
 #URLs
 
