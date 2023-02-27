@@ -167,17 +167,17 @@ BIND 9 on CentOS 8 has the following config files available for reference and us
 
 .. code-block:: bash
 
-    1. /etc/logrotate.d/named
-    2. /etc/named.conf
-    3. /etc/named.rfc1912.zones
-    4. /etc/named.root.key
-    5. /etc/rndc.conf
-    6. /etc/rndc.key
-    7. /etc/sysconfig/named
-    8. /var/named/named.ca
-    9. /var/named/named.empty
-    10. /var/named/named.localhost
-    11. /var/named/named.loopback
+     1. /etc/logrotate.d/named
+    *2. /etc/named.conf
+     3. /etc/named.rfc1912.zones
+     4. /etc/named.root.key
+     5. /etc/rndc.conf
+     6. /etc/rndc.key
+     7. /etc/sysconfig/named
+     8. /var/named/named.ca
+     9. /var/named/named.empty
+    *10. /var/named/named.localhost
+    *11. /var/named/named.loopback
 
 4 BIND Config files Centos 8
 ----------------------------
@@ -191,6 +191,7 @@ The :code:`named.conf` file is used to define the DNS server's behavior and to s
 The /etc/named.conf file is critical to the operation of the Bind 9 DNS server, as it defines the server's behavior and the zones that it serves. Any changes to this file will require the DNS server to be restarted in order for the changes to take effect.
 
 **3. /etc/named.rfc1912.zones**
+
 Reference to make your own zone file for a domain such as "example.com"
 
 **10. /var/named/named.localhost**
@@ -204,7 +205,9 @@ The /var/named/named.loopback file on CentOS 8 is a zone file for the loopback a
 Bind 9 Configuration on CentOS 8
 -----------------------------------
 
-Backup existing conf files.
+Backup existing conf files. Example of original :code:`named.conf` file_ [*select RAW*]
+
+.. _file: https://github.com/dkypuros/dhcp-dns-idm-lab/blob/main/docs/source/raw-output/named.conf.orig.txt
 
 .. code-block:: bash
 
@@ -216,76 +219,150 @@ Backup existing conf files.
 
 .. code-block:: bash
 
+    vim /etc/named.conf
+
+**named.conf**
+
+.. code-block:: bash
+
+    //
+    // named.conf
+    //
+    // Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+    // server as a caching only nameserver (as a localhost DNS resolver only).
+    //
+    // See /usr/share/doc/bind*/sample/ for example named configuration files.
+    //
+
     options {
-        directory "/var/cache/bind";
-        auth-nxdomain no;
+        listen-on port 53 { 10.0.2.5; };
+        listen-on-v6 port 53 { ::1; };
+        directory 	"/var/named";
+        dump-file 	"/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+        secroots-file	"/var/named/data/named.secroots";
+        recursing-file	"/var/named/data/named.recursing";
+        allow-query     { localhost; };
 
-        // If there is a firewall between you and nameservers you want
-        // to talk to, you may need to fix the firewall to allow multiple
-        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
-
-        // If your ISP provided one or more IP addresses for stable 
-        // nameservers, you probably want to use them as forwarders.  
-        // Uncomment the following block, and insert the addresses replacing 
-        // the all-0's placeholder.
-
-        listen-on  { 172.21.0.43; };
-        allow-query { localhost; 172.21.0.0/16; };
-        allow-transfer { none; };
-
-        forwarders { 172.21.0.1; };
+        /* 
+        - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
+        - If you are building a RECURSIVE (caching) DNS server, you need to enable 
+        recursion. 
+        - If your recursive DNS server has a public IP address, you MUST enable access 
+        control to limit queries to your legitimate users. Failing to do so will
+        cause your server to become part of large scale DNS amplification 
+        attacks. Implementing BCP38 within your network would greatly
+        reduce such attack surface 
+        */
         recursion yes;
 
-        //========================================================================
-        // If BIND logs error messages about the root key being expired,
-        // you will need to update your keys.  See https://www.isc.org/bind-keys
-        //========================================================================
+        dnssec-enable yes;
+        dnssec-validation yes;
 
-        //dnssec-validation auto;
+        managed-keys-directory "/var/named/dynamic";
 
-        //listen-on-v6 { any; };
-        };
+        pid-file "/run/named/named.pid";
+        session-keyfile "/run/named/session.key";
 
+        /* https://fedoraproject.org/wiki/Changes/CryptoPolicy */
+        include "/etc/crypto-policies/back-ends/bind.config";
+    };
 
-4 BIND Config files Debian
-----------------------------
+    logging {
+            channel default_debug {
+                    file "data/named.run";
+                    severity dynamic;
+            };
+    };
 
-Backup existing conf files.
+    zone "." IN {
+        type hint;
+        file "named.ca";
+    };
 
-.. code-block:: bash
+    include "/etc/named.rfc1912.zones";
+    include "/etc/named.root.key";
 
-    mv /etc/bind/named.conf.options /etc/bind/named.conf.options.bak
+    zone "example.com" IN {
+        type master;
+        file "/var/named/example.com.zone";
+        allow-update { none; };
+        allow-query { any; };
+        notify yes;
+    };
 
-.. code-block:: bash
-
-    touch /etc/bind/named.conf.options
-
-Copy named.conf.options into VIM
-
-.. code-block:: bash
-
-    vim /etc/bind/named.conf.options
-
-**named.conf.options**
-Configuration file that sets :code:`global options that apply to the DNS server as a whole`. Contains settings such as the logging configuration, the directory where the zone files are stored and security options.
-
-.. code-block:: bash
-
-
-**named.conf.local**
-Configuration file for defining the :code:`DNS zones that the server is authoritative for`. Contains information such as zone name, the type of zone (e.g. forwarding or reverse), and the location of the zones data file.
-
-.. code-block:: bash
-
-
-**db.127**
-Lookup zones define actual :code:`name information` (e.g. name to IP, and IP to name)
+    zone "2.0.10.in-addr.arpa" IN {
+        type master;
+        file "/var/named/example.com.rev";
+        allow-update { none; };
+        allow-query { any; };
+        notify yes;
+    };
 
 .. code-block:: bash
 
-
-**db.local**
-Lookup zones define actual :code:`name information` (e.g. name to IP, and IP to name)
+    touch /var/named/example.com.zone
+    vim /var/named/example.com.zone
+    
 
 .. code-block:: bash
 
+    $ORIGIN example.com.
+    $TTL	1w
+    example.com.	IN	SOA	ns1.example.com. hostmaster.example.com. (
+                3		; Serial
+                1w		; Refresh
+                1d		; Retry
+                28d		; Expire
+                1w) 	; Negative Cache TTL
+                
+    ; name servers - NS records
+            IN	NS	ns1.example.com.
+
+    ; name servers - A records
+    ns1.example.com.		IN	A	10.0.2.5
+
+    ; 10.0.2.0/24 - A records
+    dhcp1.example.com.		IN	A	10.0.2.4
+    id1.example.com.		IN	A	10.0.2.6
+
+
+.. code-block:: bash
+
+    touch /var/named/example.com.rev
+    vim /var/named/example.com.rev
+
+
+.. code-block:: bash
+
+    $TTL	1w
+    @	IN	SOA	ns1.example.com. hostmaster.example.com. (
+                3		; Serial
+                1w 		; Refresh
+                1d		; Retry
+                28d		; Expire
+                1w) 		; Negative Cache TTL
+                
+    ; name servers - NS records
+            IN	NS	ns1.example.com.
+
+    ; PTR Records
+    5    	IN	PTR	ns1.example.com.
+    4    	IN	PTR	dhcp1.example.com.
+    6    	IN	PTR	id1.example.com.
+
+Check DNS Conf files
+------------------------
+
+
+.. code-block:: bash
+
+    named-checkzone example.com example.com.zone
+
+**output**
+
+.. code-block:: bash
+
+    zone example.com/IN: loaded serial 3
+    OK
