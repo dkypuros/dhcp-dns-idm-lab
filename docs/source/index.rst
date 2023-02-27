@@ -7,7 +7,7 @@ Welcome
 This site is a lab for creating an environment needed for multipe other labs. 
 
 .. toctree:: 
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Lab Guide:
    
    projectdescription

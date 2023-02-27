@@ -142,7 +142,7 @@ Figure 1:
 
 DNS example
 
-.. code-blaock:: bash
+.. code-block:: bash
 
     hello world test
 

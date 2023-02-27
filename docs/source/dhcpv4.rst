@@ -145,7 +145,7 @@ Checkout my output DHCP-Journal_
 Review: DHCP ports
 -------------------------
 
-- Use instructions :ref:`here <figure1>`to test DHCP ports.
+- Use instructions :ref:`here <figure1>` to test DHCP ports.
 - My output from running relevant commands SS_
 
 .. _SS: https://github.com/dkypuros/dhcp-dns-idm-lab/blob/main/docs/source/raw-output/port-scan.txt
@@ -156,11 +156,8 @@ Review: DHCP ports
 Review: DHCP Leases
 -------------------------
 
-.. warning::
-    I might need to come back to this step. I looked at my dhcp config file, and I didn't see any selection of a location to save the CSV / leases info yet. I need to update my config and review this later.
+**Where I'm at now:**
 
-Steps I originally used: :ref:`Steps <figure6>`
+- I can't see the DHCP leases yet because I skipped a step in the tutorial where I was supposed to pull the DHCP config from a GitHub repo to use as a reference.
 
-More info I reviewed here: See_
-
-.. _See: https://kea.readthedocs.io/en/kea-1.6.2/arm/dhcp4-srv.html
+- I grabbed the repo from O'Reilly. 
