@@ -49,7 +49,21 @@ Check System's Network Settings
 
 .. code-block:: bash
 
-    nmcli
+    nmcli conn show
+
+**ns1 system network setup**
+
+- Or you can use the GUI through VirtualBox
+
+.. code-block:: bash
+
+    sudo nmcli connection modify "Wired Connection 1" ipv4.addresses 10.0.2.6/24 ipv4.method manual
+    sudo nmcli connection modify "Wired Connection 1" ipv4.gateway 10.0.2.1
+    sudo nmcli connection modify "Wired Connection 1" ipv4.dns 10.0.2.1
+
+
+
+
 
 
 DHCP Kea [Appendix]
@@ -170,9 +184,20 @@ DNS BIND 9
 
 Figure 1: 
 
-DNS example
+DNS Service Managements
 
 .. code-block:: bash
 
-    hello world test
+    sudo -i
 
+.. code-block:: bash
+
+    systemctl status named
+
+.. code-block:: bash
+
+    systemctl start named
+
+.. code-block:: bash
+
+    systemctl enable named

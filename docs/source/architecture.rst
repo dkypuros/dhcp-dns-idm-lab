@@ -37,7 +37,7 @@ These are the **primary systems** used to build the environment.
 **Directory Server (IdM)**
 
 * id1.example.com
-* 10.0.2.X (TBD)
+* 10.0.2.6
 
 .. _testworkstation:
 
@@ -48,4 +48,4 @@ These are test systems we'll use for DHCP, DNS and IdM.
 **CentOS**
 
 * centos-client.example.com
-* 10.0.2.X
+* 10.0.2.7

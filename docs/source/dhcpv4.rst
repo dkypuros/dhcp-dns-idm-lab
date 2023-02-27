@@ -1,4 +1,4 @@
-DHCP Kea - Quick Setup
+DHCP Kea - Complete Setup
 ================================
 System Prep: Let's get the system ready to provide DHCP v4 services.
 
@@ -75,7 +75,7 @@ Third
     systemctl status kea-dhcp4
 
 
-Perform: DHCP Config File Test
+Test: DHCP Config File
 --------------------------------------------
 
 Let's query information about an installed package.
@@ -107,7 +107,7 @@ Review: DHCP Config Test Results
 
 .. tip:: 
 
-   You can also test the configuration and review the output :ref:`info <figure1>` and check out the ports :ref:`ports <figure2>`
+   You can also test the configuration and review the output :ref:`info <figure2>` and check out the ports :ref:`ports <figure1>`
 
 
 - Just as a pre-caution let's test the configuration file ( :ref:`Instructions here <figure2>` ). 
@@ -255,10 +255,47 @@ The kea-dhcp4.service should show :code:`Active: active (running)`.
    CGroup: /system.slice/kea-dhcp4.service
            └─33802 /usr/sbin/kea-dhcp4 -c /etc/kea/kea-dhcp4.conf
 
-Review: DHCP Leases
+Disable DHCP VirtualBox
+--------------------------
+
+- VirtualBox Tools > Network > NAT Networks > uncheck :code:`Enable DHCP`
+- select apply
+- close all VMs and reboot VirtualBox
+
+Connect CentOS 8 Client to DHCPv4
+-------------------------------------------
+
+.. warning:: 
+    I ran into a problem here. I had a working version of the :code:`kea-dhcp4.conf` file. It had the wrong IPs in there from a training series I was following. I updated the config on the documentation site (here), but forgot to update the DHCP server and restart the services. Along the way I disabled SELinux and the firewall on the DHCP server.
+
+- Althought we're using the DHCP server, we have a :code:`reservation` option listed in the config to assign "centos-client.example.com" the IP address :code:`10.0.2.7`
+- Let's boot-up the CentOS 8 system and see if it connects to our DHCP server.
+
+**Success!**
+
+Centos client system grabs the correct IP from DHCP reservation. :code:`10.0.2.7/24`
+
+.. code-block:: bash
+
+    net 10.0.2.7/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
+
+
+Review: DHCP Leases & Reservations
 -------------------------
 
 .. code-block:: bash
     
     cat /var/lib/kea/kea-leases4.csv
 
+.. code-block:: bash
+
+    cat /var/lib/kea/dhcp4.csv
+
+Output shows our Centos 8 client machine receiving the :code:`10.0.2.7` IP.
+
+.. code-block:: bash
+
+    address,hwaddr,client_id,valid_lifetime,expire,subnet_id,fqdn_fwd,fqdn_rev,hostname,state,user_context
+    10.0.2.101,08:00:27:36:62:8e,01:08:00:27:36:62:8e,3600,1677528810,1,0,0,id1,0,
+    10.0.2.7,08:00:27:84:b3:c8,01:08:00:27:84:b3:c8,3600,1677529050,1,0,0,centos-client.example.com,0,
+    10.0.2.101,08:00:27:36:62:8e,01:08:00:27:36:62:8e,3600,1677529710,1,0,0,id1,0,

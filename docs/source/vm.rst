@@ -71,6 +71,13 @@ Once you are inside the "CentOS 8" installation screen, use these settings:
 
    set-hostname dhcp1.example.com
 
+**Static IP in GUI**
+Choose :code:`"Manual" for IPv4`. These are temporary settings.
+
+- Static IP: 10.0.2.4/24
+- Gateway: 10.0.2.1
+- DNS: 10.0.2.1
+
 **Remove Boxes from CentOS 8 "Server with GUI"**
 
 If we don't remove these packages, our systems will have a :code:`virtual interface` that just gets in the way of testing. All of our configs will need very clean interfaces, as we assign services to them, and test the services and ports.
@@ -95,6 +102,12 @@ If we don't remove these packages, our systems will have a :code:`virtual interf
 
    In the future consider running CentOS server only with No GUI.
 
+**Install DHCP Client Tools**
+This will help us quickly release IP address from DHCP from the CLI.
+
+.. code-block:: bash
+
+   sudo dnf install dhclient -y
 
 **Complete Setup**
 
@@ -137,8 +150,8 @@ Use these same steps to build **IdM** with hostname **id1** and the **Test Works
 **Ending IP Addresses**
 
 - dhcp1: :code:`10.0.2.4`
-- ns1: :code:`10.0.2.6`
-- id1: :code:`10.0.2.5`
+- ns1: :code:`10.0.2.5`
+- id1: :code:`10.0.2.6`
 - centos-client: :code:`10.0.2.7`
 
 Final Snapshop Step
