@@ -4,6 +4,14 @@
 Architectural Overview
 ============================
 
+Main LAN environment (Travel Router)
+------------------------------------------
+
+* Office LAN: 192.168.0.0/24
+* Host IP via DHCP: 192.168.0.102
+
+Each system
+
 .. _networkinfo:
 
 Network Services (systems)

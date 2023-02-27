@@ -65,6 +65,37 @@ Once you are inside the "CentOS 8" installation screen, use these settings:
 
 - for users on the sytem: create user/pass of student/student and root/redhat. This is only for lab testing purposes.
 
+**Hostname**
+
+.. code-block:: bash
+
+   set-hostname dhcp1.example.com
+
+**Remove Boxes from CentOS 8 "Server with GUI"**
+
+If we don't remove these packages, our systems will have a :code:`virtual interface` that just gets in the way of testing. All of our configs will need very clean interfaces, as we assign services to them, and test the services and ports.
+
+.. code-block:: bash
+
+   sudo -i
+
+.. code-block:: bash
+
+   systemctl disable libvirtd
+
+.. code-block:: bash
+
+   yum remove "*virt"* "*virsh*" -y
+
+.. code-block:: bash
+
+   systemctl reboot
+
+.. note::
+
+   In the future consider running CentOS server only with No GUI.
+
+
 **Complete Setup**
 
 - Wait for install to complete, and agree to license etc. Login with student account, and make sure everything works. 
@@ -89,7 +120,8 @@ To clone a virtual machine (VM) in Oracle VirtualBox, you can follow these steps
 Start and login to the new **ns1** VM
 
 .. code-block:: bash
-   hostnamectl set-hostname ns1
+   
+   hostnamectl set-hostname ns1.example.com
 
 Flap the NIC via the GUI. 
 

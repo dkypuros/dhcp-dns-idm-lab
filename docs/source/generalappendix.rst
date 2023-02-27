@@ -19,11 +19,37 @@ Cockpit Install
     systemctl start cockpit
     systemctl status cockpit
 
+.. _generalfigure2:
+
+Figure 2: 
+
 Test in Browswer
 
 .. code-block:: bash
 
     localhost:9090
+
+.. _generalfigure3:
+
+Figure 3:
+
+Check System's Network Settings
+
+.. code-block:: bash
+
+    ip address
+
+.. code-block:: bash
+
+    ip route
+
+.. code-block:: bash
+
+    cat /etc/resolv.conf
+
+.. code-block:: bash
+
+    nmcli
 
 
 DHCP Kea [Appendix]
@@ -72,6 +98,10 @@ Enable, Start, Stop dhcp version 4 service
 .. code-block:: bash
 
     systemctl restart kea-dhcp4
+
+.. code-block:: bash
+
+    systemctl status kea-dhcp4
 
 .. _figure4:
 

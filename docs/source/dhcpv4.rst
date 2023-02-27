@@ -153,11 +153,112 @@ Review: DHCP ports
 .. danger::
     I've noticed when my VirtualBox is behind a corporate firewall a virtual bridge is automatically created on the NAT interface.
 
+Backup & Copy in kea-dhcp4.conf
+-----------------------
+
+.. code-block:: bash
+
+    mv /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
+
+.. code-block:: bash
+    
+    sudo -i
+    touch /etc/kea/kea-dhcp4.conf
+
+Here is Part 1 DHCP Config. kea-dhcp4.conf_ It includes an initial config (}simple) to get us started with the service. Paste this raw text into the :code:`kea-dhcp4.conf` file.
+
+You can open the file with vim and set the syntax as JSON.
+
+.. code-block:: bash
+
+    vim /etc/kea/kea-dhcp4.conf
+
+Inside of vim. Highlight values for variables in a unique color. 
+
+.. code-block:: bash
+
+    :set syntax=json
+
+.. tip::
+
+    Change "interfaces" to match actual system NIC. :code:`nmcli con show` or :code:`ip address`
+
+The :code:`Dhcp4` at the top of this JSON config, is the main JSON object. Here is a list of DHCP options_ for the JSON :code:`option array`. We're temporarily using the DNS provided from hypervisor layer (VirtualBox). We'll come back and change this.
+
+.. _options: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+.. code-block:: json
+
+        {
+        "Dhcp4": { 
+            "interfaces-config": {
+                "interfaces": [ "enp0s3" ],
+                "dhcp-socket-type": "raw"
+            },
+            "valid-lifetime": 3600,
+            "renew-timer": 900,
+            "rebind-timer": 1800,
+        "lease-database": 
+            { 
+            "type": "memfile",
+            "lfc-interval": 3600,
+            "name": "/var/lib/kea/dhcp4.csv"
+            },
+        
+            "subnet4": [
+            {
+            "subnet": "10.0.2.0/24",  
+            "pools": [ { "pool": "10.0.2.101-10.0.2.200" } ],
+            "option-data": [
+                {
+                "name": "routers",
+                "data": "10.0.2.1"},
+            
+                {		
+                "name": "domain-name-servers",
+                "data": "10.0.2.1"},
+
+                {
+                "name": "domain-search",
+                "data": "example.com"
+                }
+                ],
+            "reservations": [
+                        {
+                        "hw-address": "08:00:27:84:b3:c8",
+                        "ip-address": "10.0.2.7",
+                        "hostname": "centos-client.example.com"
+                        }	
+                ]
+            }
+            ]	
+
+        }
+    }
+
+
+Start the service and check the status
+
+:ref:`Start/Status <figure3>`
+
+The kea-dhcp4.service should show :code:`Active: active (running)`.
+
+.. code-block:: bash
+
+    kea-dhcp4.service - Kea DHCPv4 Server
+   Loaded: loaded (/usr/lib/systemd/system/kea-dhcp4.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2023-02-25 13:26:55 CST; 1 day 19h ago
+     Docs: man:kea-dhcp4(8)
+ Main PID: 33802 (kea-dhcp4)
+    Tasks: 1 (limit: 11016)
+   Memory: 4.7M
+   CGroup: /system.slice/kea-dhcp4.service
+           └─33802 /usr/sbin/kea-dhcp4 -c /etc/kea/kea-dhcp4.conf
+
 Review: DHCP Leases
 -------------------------
 
-**Where I'm at now:**
+.. code-block:: bash
+    
+    cat /var/lib/kea/kea-leases4.csv
 
-- I can't see the DHCP leases yet because I skipped a step in the tutorial where I was supposed to pull the DHCP config from a GitHub repo to use as a reference.
-
-- I grabbed the repo from O'Reilly. 
