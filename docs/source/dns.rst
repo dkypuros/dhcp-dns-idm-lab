@@ -225,124 +225,111 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
 
 .. code-block:: bash
 
-    //
-    // named.conf
-    //
-    // Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
-    // server as a caching only nameserver (as a localhost DNS resolver only).
-    //
-    // See /usr/share/doc/bind*/sample/ for example named configuration files.
-    //
-
     options {
-        listen-on port 53 { 10.0.2.5; };
-        listen-on-v6 port 53 { ::1; };
-        directory 	"/var/named";
-        dump-file 	"/var/named/data/cache_dump.db";
-        statistics-file "/var/named/data/named_stats.txt";
-        memstatistics-file "/var/named/data/named_mem_stats.txt";
-        secroots-file	"/var/named/data/named.secroots";
-        recursing-file	"/var/named/data/named.recursing";
-        allow-query     { localhost; };
+            directory "/var/named";
+            auth-nxdomain no;
 
-        /* 
-        - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
-        - If you are building a RECURSIVE (caching) DNS server, you need to enable 
-        recursion. 
-        - If your recursive DNS server has a public IP address, you MUST enable access 
-        control to limit queries to your legitimate users. Failing to do so will
-        cause your server to become part of large scale DNS amplification 
-        attacks. Implementing BCP38 within your network would greatly
-        reduce such attack surface 
-        */
-        recursion yes;
+            // If there is a firewall between you and nameservers you want
+            // to talk to, you may need to fix the firewall to allow multiple
+            // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
 
-        dnssec-enable yes;
-        dnssec-validation yes;
+            // If your ISP provided one or more IP addresses for stable 
+            // nameservers, you probably want to use them as forwarders.  
+            // Uncomment the following block, and insert the addresses replacing 
+            // the all-0's placeholder.
 
-        managed-keys-directory "/var/named/dynamic";
+            listen-on  { 10.0.2.5; };
+            allow-query { localhost; 10.0.2.0/24; };
+            allow-transfer { none; };
 
-        pid-file "/run/named/named.pid";
-        session-keyfile "/run/named/session.key";
+            forwarders { 10.0.2.1; };
+            recursion yes;
 
-        /* https://fedoraproject.org/wiki/Changes/CryptoPolicy */
-        include "/etc/crypto-policies/back-ends/bind.config";
-    };
+            //========================================================================
+            // If BIND logs error messages about the root key being expired,
+            // you will need to update your keys.  See https://www.isc.org/bind-keys
+            //========================================================================
 
-    logging {
-            channel default_debug {
-                    file "data/named.run";
-                    severity dynamic;
-            };
-    };
+            //dnssec-validation auto;
 
-    zone "." IN {
-        type hint;
-        file "named.ca";
-    };
+            //listen-on-v6 { any; };
+        };
 
-    include "/etc/named.rfc1912.zones";
-    include "/etc/named.root.key";
-
-    zone "example.com" IN {
+    zone "example.com" 
+        {
         type master;
-        file "/var/named/example.com.zone";
-        allow-update { none; };
-        allow-query { any; };
-        notify yes;
-    };
+        file "/etc/named/zones/db.example.com"; 
+        };
 
-    zone "2.0.10.in-addr.arpa" IN {
+    zone "2.0.10.in-addr.arpa"
+        {
         type master;
-        file "/var/named/example.com.rev";
-        allow-update { none; };
-        allow-query { any; };
-        notify yes;
-    };
+        file "/etc/named/zones/db.2.0.10";
+        };
+
 
 .. code-block:: bash
 
-    touch /var/named/example.com.zone
-    vim /var/named/example.com.zone
-    
+    named-checkconf -z /etc/named.conf
+
+**db.local / db.2.0.10**
+
+.. code-block:: bash
+
+    mkdir /etc/named/zones
+
+.. code-block:: bash
+
+    touch /etc/named/zones/db.example.com
+    vim /etc/named/zones/db.example.com
+
+.. code-block:: bash
+
+    named-checkzone example.com /etc/named/zones/db.example.com
+
+
+File contents :code:`db.local` -> :code:`db.2.0.10`
 
 .. code-block:: bash
 
     $ORIGIN example.com.
     $TTL	1w
-    example.com.	IN	SOA	ns1.example.com. hostmaster.example.com. (
-                3		; Serial
-                1w		; Refresh
-                1d		; Retry
-                28d		; Expire
-                1w) 	; Negative Cache TTL
+    example.com.    IN	SOA     ns1.example.com. hostmaster.example.com. (
+                        3		    ; Serial
+                        1w		    ; Refresh
+                        1d		    ; Retry
+                        28d		    ; Expire
+                        1w) 	    ; Negative Cache TTL
                 
     ; name servers - NS records
-            IN	NS	ns1.example.com.
+                    IN	NS      ns1.example.com.
 
     ; name servers - A records
     ns1.example.com.		IN	A	10.0.2.5
 
     ; 10.0.2.0/24 - A records
     dhcp1.example.com.		IN	A	10.0.2.4
-    id1.example.com.		IN	A	10.0.2.6
+    id1.example.com         IN  A   10.0.2.6
 
+
+**db.127 / db.2.0.10**
 
 .. code-block:: bash
 
-    touch /var/named/example.com.rev
-    vim /var/named/example.com.rev
+    touch /etc/named/zones/db.2.0.10
+    vim /etc/named/zones/db.2.0.10
 
+File Contents :code:`db.127` -> :code:`db.2.0.10`
 
 .. code-block:: bash
 
     $TTL	1w
-    @	IN	SOA	ns1.example.com. hostmaster.example.com. (
+    @	    IN	SOA	ns1.example.com. hostmaster.example.com. (
                 3		; Serial
                 1w 		; Refresh
                 1d		; Retry
                 28d		; Expire
-                1w) 		; Negative Cache TTL
+                1w) 	; Negative Cache TTL
                 
     ; name servers - NS records
             IN	NS	ns1.example.com.
@@ -352,17 +339,190 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
     4    	IN	PTR	dhcp1.example.com.
     6    	IN	PTR	id1.example.com.
 
-Check DNS Conf files
-------------------------
-
 
 .. code-block:: bash
 
-    named-checkzone example.com example.com.zone
+    named-checkzone 2.0.10.in-addr.arpa /etc/named/zones/db.2.0.10
 
-**output**
+**Output from my terminal**
 
 .. code-block:: bash
 
-    zone example.com/IN: loaded serial 3
+    zone 2.0.10.in-addr.arpa/IN: loaded serial 3
     OK
+
+Change NS1 DNS to itself
+--------------------------------------------
+
+Initially, every system was set with DNS to the VirtualBox gateway. The ns1 (BIND9) server needs to have this changed to point to itself as the DNS server.
+
+.. code-block:: bash
+
+    sudo nmcli connection modify "Wired Connection 1" ipv4.dns 10.0.2.5
+
+Start / Reload BIND9 service
+------------------------------------
+
+Use instructions :ref:`here if needed. <dnsfigure1>`. Make sure there are no errors. 
+
+
+Test BIND9 Service
+-----------------------------
+
+**Dig forward test**
+
+.. code-block:: bash
+
+    dig 10.0.2.5
+
+**Dig Reverse Test:**
+
+The command "dig -x 10.0.2.5" specifically is used to perform a reverse DNS lookup on the IP address "10.0.2.5". "-x" - This option tells the "dig" command to perform a reverse DNS lookup (i.e., a lookup of a domain name given an IP address). "10.0.2.5" - This is the IP address for which a reverse DNS lookup will be performed
+
+.. code-block:: bash
+
+    dig -x 10.0.2.5
+
+**Dig Output**
+
+status: NOERROR means success. NXDOMAIN means it not working correctly. 
+
+.. tip::
+
+    check DNS settings for NS1 server. They should be set to itself.
+
+.. code-block:: bash
+
+    ; <<>> DiG 9.11.36-RedHat-9.11.36-7.el8 <<>> -x 10.0.2.5
+    ;; global options: +cmd
+    ;; Got answer:
+    ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44917
+    ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags:; udp: 1232
+    ; COOKIE: 7f0b2cd815be6e152b5f848c63fe49c44eb1b0199fad9465 (good)
+    ;; QUESTION SECTION:
+    ;5.2.0.10.in-addr.arpa.		IN	PTR
+
+    ;; ANSWER SECTION:
+    5.2.0.10.in-addr.arpa.	604800	IN	PTR	ns1.example.com.
+
+    ;; AUTHORITY SECTION:
+    2.0.10.in-addr.arpa.	604800	IN	NS	ns1.example.com.
+
+    ;; ADDITIONAL SECTION:
+    ns1.example.com.	604800	IN	A	10.0.2.5
+
+    ;; Query time: 0 msec
+    ;; SERVER: 10.0.2.5#53(10.0.2.5)
+    ;; WHEN: Tue Feb 28 12:36:52 CST 2023
+    ;; MSG SIZE  rcvd: 137
+
+**Check Ports**
+
+.. code-block:: bash
+
+    ss -tulnw
+
+**Terminal Output**
+Notice  :code:`10.0.2.5:53` That's the open BIND9 port for the server. (UDP/TCP)
+
+
+.. code-block:: bash
+
+    Netid                   State                    Recv-Q                   Send-Q                                      Local Address:Port                                        Peer Address:Port                   Process                   
+    icmp6                   UNCONN                   0                        0                                                       *:58                                                     *:*                                                
+    udp                     UNCONN                   0                        0                                                 0.0.0.0:56362                                            0.0.0.0:*                                                
+    udp                     UNCONN                   0                        0                                                10.0.2.5:53                                               0.0.0.0:*                                                
+    udp                     UNCONN                   0                        0                                                 0.0.0.0:5353                                             0.0.0.0:*                                                
+    udp                     UNCONN                   0                        0                                                    [::]:53                                                  [::]:*                                                
+    udp                     UNCONN                   0                        0                                                    [::]:5353                                                [::]:*                                                
+    udp                     UNCONN                   0                        0                                                    [::]:37126                                               [::]:*                                                
+    tcp                     LISTEN                   0                        10                                               10.0.2.5:53                                               0.0.0.0:*                                                
+    tcp                     LISTEN                   0                        128                                               0.0.0.0:22                                               0.0.0.0:*                                                
+    tcp                     LISTEN                   0                        5                                               127.0.0.1:631                                              0.0.0.0:*                                                
+    tcp                     LISTEN                   0                        128                                             127.0.0.1:953                                              0.0.0.0:*                                                
+    tcp                     LISTEN                   0                        10                                                   [::]:53                                                  [::]:*                                                
+    tcp                     LISTEN                   0                        128                                                  [::]:22                                                  [::]:*                                                
+    tcp                     LISTEN                   0                        5                                                   [::1]:631                                                 [::]:*                                                
+    tcp                     LISTEN                   0                        128                                                 [::1]:953                                                 [::]:*    
+
+
+**NS1 Dig**
+
+.. code-block:: bash
+
+    dig ns1.example.com
+
+.. code-block:: bash
+
+    ; <<>> DiG 9.11.36-RedHat-9.11.36-7.el8 <<>> ns1.example.com
+    ;; global options: +cmd
+    ;; Got answer:
+    ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 11590
+    ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags:; udp: 1232
+    ; COOKIE: bfe3f843c088c43a41ee022f63fe4b79c68d538f0e729329 (good)
+    ;; QUESTION SECTION:
+    ;ns1.example.com.		IN	A
+
+    ;; ANSWER SECTION:
+    ns1.example.com.	604800	IN	A	10.0.2.5
+
+    ;; AUTHORITY SECTION:
+    example.com.		604800	IN	NS	ns1.example.com.
+
+    ;; Query time: 0 msec
+    ;; SERVER: 10.0.2.5#53(10.0.2.5)
+    ;; WHEN: Tue Feb 28 12:44:09 CST 2023
+    ;; MSG SIZE  rcvd: 102
+
+
+Configure DHCP Server to handout New DNS IP
+--------------------------------------------------
+
+Head over to the DHCP server.
+
+.. code-block:: bash
+
+    sudo vim /etc/kea/kea-dhcp4.conf
+
+Change config.
+
+.. code-block:: bash
+
+    {
+    "name": "domain-name-servers",
+    "data": "10.0.2.5"},
+
+
+Test CentOS 8 Client System
+----------------------------------
+
+- make sure cient system is attached to correct network
+- set hostname to just "centos-client" not "centos-client.example.com"?
+
+Review "DNS configuration:"
+
+.. code-block:: bash
+
+    nmcli
+
+.. code-block:: bash
+
+    dnf install bind-utils.x86_64 -y
+    dhclient -r
+    dhclient
+
+Other / Temporarily
+------------------------------
+
+Disable firewalld
+.. code-block:: bash
+    
+    sudo -i
+    systemctl stop firewalld
+    systemctl disable firewalld

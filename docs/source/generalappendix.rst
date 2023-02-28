@@ -55,12 +55,19 @@ Check System's Network Settings
 
 - Or you can use the GUI through VirtualBox
 
+Static
+
 .. code-block:: bash
 
     sudo nmcli connection modify "Wired Connection 1" ipv4.addresses 10.0.2.6/24 ipv4.method manual
     sudo nmcli connection modify "Wired Connection 1" ipv4.gateway 10.0.2.1
     sudo nmcli connection modify "Wired Connection 1" ipv4.dns 10.0.2.1
 
+DHCP 
+
+.. code-block:: bash
+
+    sudo nmcli connection modify "enp0s3" ipv4.method auto
 
 
 
@@ -197,6 +204,14 @@ DNS Service Managements
 .. code-block:: bash
 
     systemctl start named
+
+.. code-block:: bash
+
+    systemctl stop named
+
+.. code-block:: bash
+
+    systemctl reload named
 
 .. code-block:: bash
 
