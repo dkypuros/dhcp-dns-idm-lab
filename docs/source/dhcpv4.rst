@@ -216,7 +216,7 @@ The :code:`Dhcp4` at the top of this JSON config, is the main JSON object. Here 
             
                 {		
                 "name": "domain-name-servers",
-                "data": "10.0.2.1"},
+                "data": "10.0.2.5"},
 
                 {
                 "name": "domain-search",
@@ -228,7 +228,7 @@ The :code:`Dhcp4` at the top of this JSON config, is the main JSON object. Here 
                         "hw-address": "08:00:27:84:b3:c8",
                         "ip-address": "10.0.2.7",
                         "hostname": "centos-client.example.com"
-                        }	
+                        }
                 ]
             }
             ]	

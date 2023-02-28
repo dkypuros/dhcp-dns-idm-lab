@@ -1,0 +1,99 @@
+    options {
+            directory "/var/named";
+            auth-nxdomain no;
+
+            // If there is a firewall between you and nameservers you want
+            // to talk to, you may need to fix the firewall to allow multiple
+            // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+            // If your ISP provided one or more IP addresses for stable 
+            // nameservers, you probably want to use them as forwarders.  
+            // Uncomment the following block, and insert the addresses replacing 
+            // the all-0's placeholder.
+
+            listen-on  { 10.0.2.5; };
+            allow-query { localhost; 10.0.2.0/24; };
+            allow-transfer { none; };
+
+            forwarders { 10.0.2.1; };
+            recursion yes;
+
+            //========================================================================
+            // If BIND logs error messages about the root key being expired,
+            // you will need to update your keys.  See https://www.isc.org/bind-keys
+            //========================================================================
+
+            //dnssec-validation auto;
+
+            //listen-on-v6 { any; };
+        };
+
+    zone "example.com" 
+        {
+        type master;
+        file "/etc/named/zones/db.example.com"; 
+        };
+
+    zone "2.0.10.in-addr.arpa"
+        {
+        type master;
+        file "/etc/named/zones/db.2.0.10";
+        };
+
+
+
+
+
+.. code-block:: json
+
+        {
+        "Dhcp4": { 
+            "interfaces-config": {
+                "interfaces": [ "enp0s3" ],
+                "dhcp-socket-type": "raw"
+            },
+            "valid-lifetime": 3600,
+            "renew-timer": 900,
+            "rebind-timer": 1800,
+        "lease-database": 
+            { 
+            "type": "memfile",
+            "lfc-interval": 3600,
+            "name": "/var/lib/kea/dhcp4.csv"
+            },
+        
+            "subnet4": [
+            {
+            "subnet": "10.0.2.0/24",  
+            "pools": [ { "pool": "10.0.2.101-10.0.2.200" } ],
+            "option-data": [
+                {
+                "name": "routers",
+                "data": "10.0.2.1"},
+            
+                {		
+                "name": "domain-name-servers",
+                "data": "10.0.2.5"},
+
+                {
+                "name": "domain-search",
+                "data": "example.com"
+                }
+                ],
+            "reservations": [
+                        {
+                        "hw-address": "08:00:27:84:b3:c8",
+                        "ip-address": "10.0.2.7",
+                        "hostname": "centos-client"
+                        },
+                        {
+                        "hw-address": "08:00:27:36:62:8E",
+                        "ip-address": "10.0.2.6",
+                        "hostname": "id1"
+                        }	
+                ]
+            }
+            ]	
+
+        }
+    }

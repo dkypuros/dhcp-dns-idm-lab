@@ -68,6 +68,7 @@ DHCP
 .. code-block:: bash
 
     sudo nmcli connection modify "enp0s3" ipv4.method auto
+    
 
 
 

@@ -227,33 +227,13 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
 
     options {
             directory "/var/named";
-            auth-nxdomain no;
-
-            // If there is a firewall between you and nameservers you want
-            // to talk to, you may need to fix the firewall to allow multiple
-            // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
-
-            // If your ISP provided one or more IP addresses for stable 
-            // nameservers, you probably want to use them as forwarders.  
-            // Uncomment the following block, and insert the addresses replacing 
-            // the all-0's placeholder.
-
-            listen-on  { 10.0.2.5; };
-            allow-query { localhost; 10.0.2.0/24; };
-            allow-transfer { none; };
-
-            forwarders { 10.0.2.1; };
+            dump-file "/var/named/data/cache_dump.db";
+            statistics-file "/var/named/data/named_stats.txt";
+            memstatistics-file "/var/named/data/named_mem_stats.txt";
             recursion yes;
-
-            //========================================================================
-            // If BIND logs error messages about the root key being expired,
-            // you will need to update your keys.  See https://www.isc.org/bind-keys
-            //========================================================================
-
-            //dnssec-validation auto;
-
-            //listen-on-v6 { any; };
-        };
+            allow-query { any; };
+            forwarders { 10.0.2.1; };
+    };
 
     zone "example.com" 
         {
@@ -507,6 +487,12 @@ Test CentOS 8 Client System
 
 Review "DNS configuration:"
 
+We want the DNS server to point to our new BIND9 server, and the default gateway to be moved from 10.0.2.5 to 10.0.2.1. 
+
+.. warning::
+    
+    ?? I'm not sure why we initially set the DHCP server router config to 10.0.2.5. I need to research this later.
+
 .. code-block:: bash
 
     nmcli
@@ -516,6 +502,58 @@ Review "DNS configuration:"
     dnf install bind-utils.x86_64 -y
     dhclient -r
     dhclient
+
+.. code-block:: bash
+
+    ping dhcp1
+
+.. code-block:: bash
+
+    PING dhcp1.example.com (10.0.2.4) 56(84) bytes of data.
+    64 bytes from dhcp1.example.com (10.0.2.4): icmp_seq=1 ttl=64 time=0.173 ms
+    64 bytes from dhcp1.example.com (10.0.2.4): icmp_seq=2 ttl=64 time=0.272 ms
+    64 bytes from dhcp1.example.com (10.0.2.4): icmp_seq=3 ttl=64 time=0.237 ms
+
+Make sure these systems are running.
+
+Forward Lookup Testing
+
+.. code-block:: bash
+
+    ping -c 2 dhcp1
+    ping -c 2 ns1
+    ping -c 2 id1
+    ping -c 2 google.com
+
+Reverse Lookup Testing
+
+.. code-block:: bash
+
+    host 10.0.2.5
+    host 10.0.2.4
+    host 10.0.2.6
+    dig -x 10.0.2.5
+    dig -x 10.0.2.4
+    dig -x 10.0.2.6
+    dig +noall +answer -x 10.0.2.5
+    dig +noall +answer -x 10.0.2.4
+    dig +noall +answer -x 10.0.2.6
+
+
+
+**Output from my terminal**
+
+.. code-block:: bash
+
+    [student@centos-client ~]$ host 10.0.2.5
+    5.2.0.10.in-addr.arpa domain name pointer ns1.example.com.
+    [student@centos-client ~]$ host 10.0.2.4
+    4.2.0.10.in-addr.arpa domain name pointer dhcp1.example.com.
+    [student@centos-client ~]$ host 10.0.2.6
+    6.2.0.10.in-addr.arpa domain name pointer id1.example.com.
+
+
+
 
 Other / Temporarily
 ------------------------------
