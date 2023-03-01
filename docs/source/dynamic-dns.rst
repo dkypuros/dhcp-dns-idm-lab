@@ -67,7 +67,9 @@ Back to DHCP Kea Server
 
     vim /etc/kea/kea-dhcp4.conf
 
-Kea DHCPv.conf file we want to use.
+Kea DHCPv.conf file we want to use. Here is the original file that comes with CentOS 8 when you install ISC-DHCP (incl. DDNS) default-config_
+
+.. _default-config: https://raw.githubusercontent.com/dkypuros/dhcp-dns-idm-lab/main/docs/source/raw-output/dhcp-ddns-original.txt
 
 .. code-block:: bash
 
