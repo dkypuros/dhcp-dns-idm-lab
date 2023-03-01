@@ -1,3 +1,5 @@
+// kea-dhcp4.conf.conf file contents. Removed comments.
+
 {
 
 "Dhcp4": {
@@ -11,8 +13,6 @@
     },
 
     "lease-database": {
-        // Memfile is the simplest and easiest backend to use. It's an in-memory
-        // C++ database that stores its state in CSV file.
         "type": "memfile",
         "lfc-interval": 3600
     },
