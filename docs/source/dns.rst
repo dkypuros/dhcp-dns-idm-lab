@@ -1,4 +1,4 @@
-DNS BIND 9 - Complete Setup
+DNS BIND 9 - Foundational Setup
 =======================================
 
 

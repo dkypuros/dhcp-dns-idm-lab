@@ -105,6 +105,8 @@ Figure 3:
 
 Enable, Start, Stop dhcp version 4 service
 
+**DHCP** 
+
 .. code-block:: bash
 
     systemctl enable kea-dhcp4
@@ -124,6 +126,28 @@ Enable, Start, Stop dhcp version 4 service
 .. code-block:: bash
 
     systemctl status kea-dhcp4
+
+**DHCP DDNS**
+
+.. code-block:: bash
+
+    systemctl start kea-dhcp-ddns
+
+.. code-block:: bash
+
+    systemctl status kea-dhcp-ddns
+
+.. code-block:: bash
+
+    systemctl stop kea-dhcp-ddns
+
+.. code-block:: bash
+
+    systemctl enable kea-dhcp-ddns
+
+.. code-block:: bash
+
+    systemctl disable kea-dhcp-ddns
 
 .. _figure4:
 

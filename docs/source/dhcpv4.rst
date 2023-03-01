@@ -1,5 +1,6 @@
-DHCP Kea - Complete Setup
+DHCP Kea - Foundational Setup
 ================================
+
 System Prep: Let's get the system ready to provide DHCP v4 services.
 
 Internet Access
@@ -281,7 +282,7 @@ Centos client system grabs the correct IP from DHCP reservation. :code:`10.0.2.7
 
 
 Review: DHCP Leases & Reservations
--------------------------
+----------------------------------------
 
 .. code-block:: bash
     

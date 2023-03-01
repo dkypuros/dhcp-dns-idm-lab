@@ -15,5 +15,6 @@ This site is a lab for creating an environment needed for multipe other labs.
    vm
    dhcpv4
    dns
+   dynamic-dns
    generalappendix
    referenceoutput
