@@ -24,35 +24,59 @@ Start up the BIND 9 service.
 
 :ref:`Start, Enable, Status <dnsfigure1>`
 
+.. code-block:: bash
+
+    systemctl status named
+
+.. code-block:: bash
+
+    systemctl start named
+
+.. code-block:: bash
+
+    systemctl enable named
+
+
 Example Output
 
 .. code-block:: bash
 
     ● named.service - Berkeley Internet Name Domain (DNS)
-    Loaded: loaded (/usr/lib/systemd/system/named.service; disabled; vendor preset: disabled)
-    Active: active (running) since Mon 2023-02-27 14:01:55 CST; 27s ago
-    Process: 3635 ExecStart=/usr/sbin/named -u named -c ${NAMEDCONF} $OPTIONS (code=exited, status=0/SUCCESS)
-    Process: 3631 ExecStartPre=/bin/bash -c if [ ! "$DISABLE_ZONE_CHECKING" == "yes" ]; then /usr/sbin/named-checkconf >
-    Main PID: 3636 (named)
-    Tasks: 5 (limit: 11028)
-    Memory: 15.8M
+    Loaded: loaded (/usr/lib/systemd/system/named.service; enabled; vendor preset: disabled)
+    Active: active (running) since Thu 2023-03-02 13:35:32 CST; 3min 48s ago
+    Process: 851 ExecStart=/usr/sbin/named -u named -c ${NAMEDCONF} $OPTIONS (code=exited, status=0/SUCCESS)
+    Process: 842 ExecStartPre=/bin/bash -c if [ ! "$DISABLE_ZONE_CHECKING" == "yes" ]; then /usr/sbin/named-checkconf -z "$NAMEDCONF"; else echo "Checking of zone files is disabled"; fi (code=exited, status=0/SUCCESS)
+    Main PID: 853 (named)
+        Tasks: 5 (limit: 11028)
+    Memory: 23.2M
     CGroup: /system.slice/named.service
-        └─3636 /usr/sbin/named -u named -c /etc/named.conf
+            └─853 /usr/sbin/named -u named -c /etc/named.conf
 
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './DNSKEY/IN': 2001:500:200::b#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './NS/IN': 2001:500:200::b#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './DNSKEY/IN': 2001:7fe::53#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './NS/IN': 2001:7fe::53#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './DNSKEY/IN': 2001:7fd::1#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './NS/IN': 2001:7fd::1#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './DNSKEY/IN': 2001:dc3::35#53
-    Feb 27 14:01:55 ns1.example.com named[3636]: network unreachable resolving './NS/IN': 2001:dc3::35#53
-    Feb 27 14:02:05 ns1.example.com named[3636]: managed-keys-zone: Unable to fetch DNSKEY set '.': timed out
-    Feb 27 14:02:05 ns1.example.com named[3636]: resolver priming query complete
+    Mar 02 13:35:32 ns1.example.com named[853]: command channel listening on 127.0.0.1#953
+    Mar 02 13:35:32 ns1.example.com named[853]: configuring command channel from '/etc/rndc.key'
+    Mar 02 13:35:32 ns1.example.com named[853]: command channel listening on ::1#953
+    Mar 02 13:35:32 ns1.example.com named[853]: managed-keys-zone: loaded serial 0
+    Mar 02 13:35:32 ns1.example.com named[853]: zone 2.0.10.in-addr.arpa/IN: loaded serial 3
+    Mar 02 13:35:32 ns1.example.com named[853]: zone example.com/IN: loaded serial 3
+    Mar 02 13:35:32 ns1.example.com named[853]: all zones loaded
+    Mar 02 13:35:32 ns1.example.com named[853]: running
+    Mar 02 13:35:32 ns1.example.com systemd[1]: Started Berkeley Internet Name Domain (DNS).
+    Mar 02 13:35:33 ns1.example.com named[853]: listening on IPv4 interface enp0s3, 10.0.2.5#53
 
 
-Review IP Network Info of BINd Server
+Review IP Network Info of BIND9 Server
 ---------------------------------------------
+
+We're Temporarily using VirtualBox to get out of the network. :code:`servers: 10.0.2.1`
+
+.. code-block:: bash
+
+    nmcli
+
+.. code-block:: bash
+
+    ping google.com
+
 
 .. code-block:: bash
 
@@ -161,46 +185,6 @@ Disable Firewall Temporarily
 
     systemctl disable firewalld
 
-BIND 9 on Centos 8 - 11 Config Files
-------------------------------------------
-BIND 9 on CentOS 8 has the following config files available for reference and usage:
-
-.. code-block:: bash
-
-     1. /etc/logrotate.d/named
-    *2. /etc/named.conf
-     3. /etc/named.rfc1912.zones
-     4. /etc/named.root.key
-     5. /etc/rndc.conf
-     6. /etc/rndc.key
-     7. /etc/sysconfig/named
-     8. /var/named/named.ca
-     9. /var/named/named.empty
-    *10. /var/named/named.localhost
-    *11. /var/named/named.loopback
-
-4 BIND Config files Centos 8
-----------------------------
-
-**2. /etc/named.conf**
-
-The :code:`/etc/named.conf` file on CentOS 8 is the main configuration file for the Bind 9 DNS server. It contains global options and settings for the DNS server, as well as definitions for the zones that the DNS server will serve.
-
-The :code:`named.conf` file is used to define the DNS server's behavior and to specify which zones it will serve. For example, the options section might specify whether or not the DNS server will perform recursion, and the zone sections will define the DNS records for each zone, such as the Start of Authority (SOA) record, Name Server (NS) records, and the Resource Records (RRs) that map domain names to IP addresses.
-
-The /etc/named.conf file is critical to the operation of the Bind 9 DNS server, as it defines the server's behavior and the zones that it serves. Any changes to this file will require the DNS server to be restarted in order for the changes to take effect.
-
-**3. /etc/named.rfc1912.zones**
-
-Reference to make your own zone file for a domain such as "example.com"
-
-**10. /var/named/named.localhost**
-
-The /var/named/named.localhost file on CentOS 8 is a zone file for the localhost domain. This file maps the name localhost to the loopback address 127.0.0.1, which is the IP address of the local system.
-
-**11. /var/named/named.loopback**
-
-The /var/named/named.loopback file on CentOS 8 is a zone file for the loopback address 127.in-addr.arpa. This file maps the IP address 127.0.0.1 to the name localhost.
 
 Bind 9 Configuration on CentOS 8
 -----------------------------------
@@ -261,6 +245,9 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
 .. code-block:: bash
 
     touch /etc/named/zones/db.example.com
+
+.. code-block:: bash
+    
     vim /etc/named/zones/db.example.com
 
 .. code-block:: bash
@@ -269,9 +256,6 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
 
 
 File contents :code:`db.local` -> :code:`db.example.com`
-
-.. tip::
-    Feel free to come back to this file later and add a statement for client-centos such as "centos-client.example.com   IN  A   10.0.2.101"
 
 .. code-block:: bash
 
@@ -291,8 +275,9 @@ File contents :code:`db.local` -> :code:`db.example.com`
     ns1.example.com.		IN	A	10.0.2.5
 
     ; 10.0.2.0/24 - A records
-    dhcp1.example.com.		IN	A	10.0.2.4
-    id1.example.com         IN  A   10.0.2.6
+    dhcp1.example.com.          IN  A	10.0.2.4
+    id1.example.com             IN  A   10.0.2.6
+    centos-client.example.com   IN  A   10.0.2.7
 
 
 
@@ -304,6 +289,9 @@ File contents :code:`db.local` -> :code:`db.example.com`
 .. code-block:: bash
 
     touch /etc/named/zones/db.2.0.10
+
+.. code-block:: bash
+
     vim /etc/named/zones/db.2.0.10
 
 File Contents :code:`db.127` -> :code:`db.2.0.10`
@@ -325,6 +313,7 @@ File Contents :code:`db.127` -> :code:`db.2.0.10`
     5    	IN	PTR	ns1.example.com.
     4    	IN	PTR	dhcp1.example.com.
     6    	IN	PTR	id1.example.com.
+    7    	IN	PTR	client-centos.example.com.
 
 
 .. code-block:: bash
@@ -345,7 +334,17 @@ Initially, every system was set with DNS to the VirtualBox gateway. The ns1 (BIN
 
 .. code-block:: bash
 
-    sudo nmcli connection modify "Wired Connection 1" ipv4.dns 10.0.2.5
+    sudo nmcli connection modify "enp0s3" ipv4.dns 10.0.2.5
+
+.. code-block:: bash
+
+    nmcli con mod enp0s3 ipv4.dns-search "example.com"
+
+Reboot or flash the NIC from inside the VM
+
+.. code-block:: bash
+
+    reboot
 
 Start / Reload BIND9 service
 ------------------------------------
@@ -361,6 +360,7 @@ Test BIND9 Service
 .. code-block:: bash
 
     dig 10.0.2.5
+
 
 **Dig Reverse Test:**
 

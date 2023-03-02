@@ -241,3 +241,7 @@ DNS Service Managements
 .. code-block:: bash
 
     systemctl enable named
+
+.. code-block:: bash
+
+    journalctl -u named.service

@@ -1,5 +1,5 @@
-Adding DDNS
-============
+SKIP - Adding DDNS
+======================
 
 Re-install DHCP Kea to include DDNS
 -------------------------------------
@@ -66,6 +66,10 @@ On the DHCP Kea Server - DDNS
 ----------------------------------
 
 **dhcp1**
+
+.. code-block:: bash
+
+    mv /etc/kea-dhcp6.conf /etc/kea-dhcp6.conf.bak
 
 .. code-block:: bash
 
@@ -250,6 +254,13 @@ Update BIND9 Config to :code:`allow-update` from DHCP server.
 
 Lower SElinux for non-production lab use case.
 
+Set to -> :code:`SELINUX=disabled`
+
+.. code-block:: bash
+
+    vim /etc/selinux/config
+
+
 .. code-block:: bash
 
     setenforce 0
@@ -261,6 +272,25 @@ Lower SElinux for non-production lab use case.
 
 Start Both systems
 --------------------
+
+**Before you start the sytems.** Review this info.
+
+.. warning::
+
+    You will get an error  :code:`DHCP/DDNS forward add rejected`. I.e. DHCP/DDNS service can't add the record to DN/BIND9. DNS/BIND9 will reject the request (to add the mapping) for :code:`pro-10-0-2-182.example.com` because of a file permissions issue on DNS/BIND9 zone files. Research RCODES with RFC2136 (error condition 0-8). e.g. RCODE 2 is an 'internal error' such as OS.
+
+Verify the permissions in :code:`/etc/named/zones/`. If there aren't sufficient permission add them accordingly, and restart services if needed. Review status of service, and renew/release DHCP IP.
+
+.. code-block:: bash
+
+    cd /etc/named/zones/
+    ls -la 
+    chmod 777 * 
+    cd ..
+    chmod 777 zones
+    ls -la
+
+**Now Start the sytems**
 
 Fire Up all the Services (DHCP/DNS)
 
@@ -300,22 +330,6 @@ Test: Client(s)
 
     systemctl status kea-dhcp4
 
-.. warning::
-
-    You will get an error  :code:`DHCP/DDNS forward add rejected`. I.e. DHCP/DDNS service can't add the record to DN/BIND9. DNS/BIND9 will reject the request (to add the mapping) for :code:`pro-10-0-2-182.example.com` because of a file permissions issue on DNS/BIND9 zone files. Research RCODES with RFC2136 (error condition 0-8). e.g. RCODE 2 is an 'internal error' such as OS.
-
-Verify the permissions in :code:`/etc/named/zones/`. If there aren't sufficient permission add them accordingly, and restart services if needed. Review status of service, and renew/release DHCP IP.
-
-.. code-block:: bash
-
-    cd /etc/named/zones/
-    ls -la 
-    chmod 777 * 
-    cd ..
-    chmod zones
-    ls -la
-
-You should now see :code:`.jnl` files in the zones directory.
 
 Review DNS/BIND9 to see zones added
 ---------------------------------------
@@ -324,15 +338,17 @@ Review DNS/BIND9 to see zones added
 
     You may need to allow time for the :code:`client-centos` system to refresh according to the timers set. If your in a hurry you can restart BIND9 service.
 
-There should be additions to the file, including :code:`pro-10-0-2-182  A  10.0.2.182   `
+There should be additions to the file, including :code:`pro-10-0-2-182  A  10.0.2.182`
 
 .. code-block:: bash
 
     vim /etc/named/zones/db.example.com
 
+Review DHCP DDNS leases
+------------------------------
+
 .. code-block:: bash
 
-    cat /var/lib/kea/kea-leases4.csv
     cat /var/lib/kea/dhcp4.csv
 
 .. tip::
@@ -356,3 +372,9 @@ Troubleshooting Tips
 - review all of your config files
 - make sure status of services are green
 - compare zone files to :code:`systemctl status XYZ` services.
+
+Run on both servers
+
+.. code-block:: bash
+
+    journalctl -xe
