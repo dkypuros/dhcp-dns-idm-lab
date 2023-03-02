@@ -268,7 +268,10 @@ Backup existing conf files. Example of original :code:`named.conf` file_ [*selec
     named-checkzone example.com /etc/named/zones/db.example.com
 
 
-File contents :code:`db.local` -> :code:`db.2.0.10`
+File contents :code:`db.local` -> :code:`db.example.com`
+
+.. tip::
+    Feel free to come back to this file later and add a statement for client-centos such as "centos-client.example.com   IN  A   10.0.2.101"
 
 .. code-block:: bash
 
@@ -292,7 +295,11 @@ File contents :code:`db.local` -> :code:`db.2.0.10`
     id1.example.com         IN  A   10.0.2.6
 
 
+
 **db.127 / db.2.0.10**
+
+.. tip::
+    Feel free to come back here and add a statement for client-centos under the "; PTR Records" such as "101 IN PTR  client-centos.example.com"
 
 .. code-block:: bash
 
@@ -491,7 +498,7 @@ We want the DNS server to point to our new BIND9 server, and the default gateway
 
 .. warning::
     
-    ?? I'm not sure why we initially set the DHCP server router config to 10.0.2.5. I need to research this later.
+    ?? I'm not sure why we initially set the DHCP server router config to 10.0.2.5. I need to research this later. ==> PS I found out when the course trainer changed this setting. He uses Debian as his test VM, where I'm using CentOS. You see him alter these settings starting on 10:13:41 for id1 etc. He doesn't really alter DNS on CentOS machines until later and as needed. 
 
 .. code-block:: bash
 

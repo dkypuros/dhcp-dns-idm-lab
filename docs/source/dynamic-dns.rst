@@ -1,5 +1,8 @@
-DNS BIND 9 - Dynamic Setup
-============================
+Adding DDNS
+============
+
+Re-install DHCP Kea to include DDNS
+-------------------------------------
 
 On the DHCP server we'll run :code:`DHCP and DDNS` services together.
 
@@ -59,8 +62,8 @@ DNS BIND9 Server
     dnf update -y
 
 
-Back to DHCP Kea Server - Configure DHCP fo DDNS
-=====================================================
+On the DHCP Kea Server - DDNS
+----------------------------------
 
 **dhcp1**
 
@@ -206,14 +209,18 @@ Back to DHCP Kea Server - Configure DHCP fo DDNS
     kea-dhcp4 -t /etc/kea/kea-dhcp-ddns.conf
 
 
-Back to DNS BIND9 Server - Configure DNS fo DDNS
-=====================================================
+On the DNS Server - DDNS
+--------------------------
 
 .. code-block:: bash
 
     vim /etc/named.conf
 
-Update BIND9 Config to :code:`allow-update` from DHCP server.
+Update BIND9 Config to :code:`allow-update` from DHCP server. 
+
+.. tip:: 
+    
+    Keep all other zone files the same
 
 .. code-block:: bash
 
@@ -252,19 +259,100 @@ Lower SElinux for non-production lab use case.
 
     systemctl start named
 
+Start Both systems
+--------------------
+
+Fire Up all the Services (DHCP/DNS)
+
+- Make sure both servers are up and running with no errors.
+- Start / Restart DHCP kea Service
+- Start / Restart DNS BIND9 Service
+
+Test: DHCP-DDNS Server
+--------------------------
+
+- Do a simple status test on both servers.
+
+Test: Client(s)
+---------------
+
+.. tip::
+
+    The previous test system :code:`centos-client` already had a DHCP reservation, however we re-built the DHCP server and did not inlude any reservations.
+
+- verify dhcp settings for :code:`centos-client`. If necessary reset DHCP client.
+
 .. code-block:: bash
 
-    x
+    dhclient -r
+    dhclient
+
+- reboot :code:`centos-client` system after verifying.
+- login to :code:`centos-client` and check network.
 
 .. code-block:: bash
 
-    x
+    nmcli
+
+- Check the status of the dhcp (DDNS)
 
 .. code-block:: bash
 
-    x
+    systemctl status kea-dhcp4
+
+.. warning::
+
+    You will get an error  :code:`DHCP/DDNS forward add rejected`. I.e. DHCP/DDNS service can't add the record to DN/BIND9. DNS/BIND9 will reject the request (to add the mapping) for :code:`pro-10-0-2-182.example.com` because of a file permissions issue on DNS/BIND9 zone files. Research RCODES with RFC2136 (error condition 0-8). e.g. RCODE 2 is an 'internal error' such as OS.
+
+Verify the permissions in :code:`/etc/named/zones/`. If there aren't sufficient permission add them accordingly, and restart services if needed. Review status of service, and renew/release DHCP IP.
 
 .. code-block:: bash
 
-    x
+    cd /etc/named/zones/
+    ls -la 
+    chmod 777 * 
+    cd ..
+    chmod zones
+    ls -la
 
+You should now see :code:`.jnl` files in the zones directory.
+
+Review DNS/BIND9 to see zones added
+---------------------------------------
+
+.. tip::
+
+    You may need to allow time for the :code:`client-centos` system to refresh according to the timers set. If your in a hurry you can restart BIND9 service.
+
+There should be additions to the file, including :code:`pro-10-0-2-182  A  10.0.2.182   `
+
+.. code-block:: bash
+
+    vim /etc/named/zones/db.example.com
+
+.. code-block:: bash
+
+    cat /var/lib/kea/kea-leases4.csv
+    cat /var/lib/kea/dhcp4.csv
+
+.. tip::
+
+    If you look at :code:`client-centos` system hostname, it will only show you locally what the hostname is. You can't ping that hostname from another system. You have to use what was dynamically added to DNS.
+
+**Final Client Test**
+
+Many hosting companies will park a domain using DDNS. Ping "serverbash.com" and you might get :code:`ip-184-168-131-241.ip.secure.net` for example. Domain vs the hostname.
+
+.. code-block:: bash
+
+    ping pro-10.0.2.181.example.com
+
+Troubleshooting Tips
+------------------------
+
+- SElinux
+- Firewalld
+- file permissions
+- review all of your config files
+- make sure status of services are green
+- compare zone files to :code:`systemctl status XYZ` services.

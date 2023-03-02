@@ -155,7 +155,7 @@ Review: DHCP ports
     I've noticed when my VirtualBox is behind a corporate firewall a virtual bridge is automatically created on the NAT interface.
 
 Backup & Copy in kea-dhcp4.conf
------------------------
+----------------------------------
 
 .. code-block:: bash
 
@@ -166,7 +166,7 @@ Backup & Copy in kea-dhcp4.conf
     sudo -i
     touch /etc/kea/kea-dhcp4.conf
 
-Here is Part 1 DHCP Config. kea-dhcp4.conf_ It includes an initial config (}simple) to get us started with the service. Paste this raw text into the :code:`kea-dhcp4.conf` file.
+Here is Part 1 DHCP Config. It includes an initial config (}simple) to get us started with the service. Paste this raw text into the :code:`kea-dhcp4.conf` file.
 
 You can open the file with vim and set the syntax as JSON.
 
